@@ -4,6 +4,9 @@ using TrackAndTrace.Core.Interfaces;
 
 namespace TrackAndTrace.Host.Services;
 
+/// <summary>
+/// Exports production records to a CSV file suitable for import into an ERP system.
+/// </summary>
 public sealed class ErpExportService
 {
     private readonly IProductionRepository _repository;

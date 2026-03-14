@@ -39,6 +39,9 @@ _ = Task.Run(PeriodicInspectionTriggerAsync, cts.Token);
 
 await WaitForExitAsync();
 
+/// <summary>
+/// Fires a periodic trigger at the configured inspection rate to pace simulated throughput.
+/// </summary>
 async Task PeriodicInspectionTriggerAsync()
 {
     while (!cts.IsCancellationRequested)
@@ -51,6 +54,9 @@ async Task PeriodicInspectionTriggerAsync()
 listener.Stop();
 Console.WriteLine("\nShutdown complete.");
 
+/// <summary>
+/// Continuously accepts incoming TCP client connections and spawns a handler task for each.
+/// </summary>
 async Task AcceptClientsAsync()
 {
     while (!cts.IsCancellationRequested)
@@ -68,6 +74,9 @@ async Task AcceptClientsAsync()
     }
 }
 
+/// <summary>
+/// Handles inspection requests from a single connected client, returning PASS or FAIL responses.
+/// </summary>
 async Task HandleClientAsync(TcpClient tcp, string endpoint)
 {
     try
@@ -121,6 +130,9 @@ async Task HandleClientAsync(TcpClient tcp, string endpoint)
     static bool IsClientDisconnected(string? line) => line is null;
 }
 
+/// <summary>
+/// Blocks until the user presses Q, then signals the cancellation token to stop all tasks.
+/// </summary>
 async Task WaitForExitAsync()
 {
     Log("Press [Q] to quit.");
@@ -139,6 +151,9 @@ async Task WaitForExitAsync()
     }
 }
 
+/// <summary>
+/// Writes a timestamped message to the console with current inspection statistics.
+/// </summary>
 void Log(string message)
 {
     lock (consoleLock)
@@ -150,6 +165,9 @@ void Log(string message)
     }
 }
 
+/// <summary>
+/// Prints the simulator banner header to the console.
+/// </summary>
 void PrintBanner()
 {
     Console.ForegroundColor = ConsoleColor.Green;
@@ -162,6 +180,9 @@ void PrintBanner()
     Console.WriteLine();
 }
 
+/// <summary>
+/// Prints a horizontal separator line to the console.
+/// </summary>
 void PrintSeparator()
 {
     lock (consoleLock)

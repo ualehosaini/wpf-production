@@ -5,6 +5,9 @@ using TrackAndTrace.Core.Models;
 
 namespace TrackAndTrace.Host.Converters;
 
+/// <summary>
+/// Converts a boolean inspection result to the display strings "PASS" or "FAIL".
+/// </summary>
 public sealed class BoolToPassFailConverter : IValueConverter
 {
     /// <summary>
@@ -20,6 +23,9 @@ public sealed class BoolToPassFailConverter : IValueConverter
         throw new NotSupportedException();
 }
 
+/// <summary>
+/// Converts a boolean inspection result to a green or red brush for UI colouring.
+/// </summary>
 public sealed class BoolToPassFailBrushConverter : IValueConverter
 {
     private static readonly SolidColorBrush PassBrush = new(Color.FromRgb(0x40, 0xA0, 0x6A));
@@ -38,6 +44,9 @@ public sealed class BoolToPassFailBrushConverter : IValueConverter
         throw new NotSupportedException();
 }
 
+/// <summary>
+/// Converts a <see cref="PluginStatus"/> value to a coloured brush for status indicator display.
+/// </summary>
 public sealed class PluginStatusToBrushConverter : IValueConverter
 {
     private static readonly SolidColorBrush IdleBrush = new(Color.FromRgb(0x6C, 0x70, 0x86));
@@ -64,6 +73,9 @@ public sealed class PluginStatusToBrushConverter : IValueConverter
         throw new NotSupportedException();
 }
 
+/// <summary>
+/// Formats a double value as a percentage string with one decimal place.
+/// </summary>
 public sealed class PercentageConverter : IValueConverter
 {
     /// <summary>

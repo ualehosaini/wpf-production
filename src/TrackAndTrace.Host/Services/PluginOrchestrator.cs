@@ -3,6 +3,9 @@ using TrackAndTrace.Core.Models;
 
 namespace TrackAndTrace.Host.Services;
 
+/// <summary>
+/// Coordinates the execution of all registered station plugins for each production item.
+/// </summary>
 public sealed class PluginOrchestrator
 {
     private readonly IReadOnlyList<IStationPlugin> _plugins;
@@ -15,6 +18,9 @@ public sealed class PluginOrchestrator
         _plugins = plugins.ToList();
     }
 
+    /// <summary>
+    /// Ordered list of plugins executed for every item that enters the pipeline.
+    /// </summary>
     public IReadOnlyList<IStationPlugin> Plugins => _plugins;
 
     /// <summary>

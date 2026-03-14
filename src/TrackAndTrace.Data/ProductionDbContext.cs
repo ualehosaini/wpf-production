@@ -3,6 +3,9 @@ using TrackAndTrace.Data.Entities;
 
 namespace TrackAndTrace.Data;
 
+/// <summary>
+/// EF Core database context providing access to the production entries table.
+/// </summary>
 public sealed class ProductionDbContext : DbContext
 {
     /// <summary>
@@ -11,6 +14,9 @@ public sealed class ProductionDbContext : DbContext
     public ProductionDbContext(DbContextOptions<ProductionDbContext> options)
         : base(options) { }
 
+    /// <summary>
+    /// Provides access to the set of persisted production entry records.
+    /// </summary>
     public DbSet<ProductionEntry> ProductionEntries => Set<ProductionEntry>();
 
     /// <summary>

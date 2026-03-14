@@ -20,7 +20,14 @@ public sealed class ScannerPlugin : IStationPlugin, IDisposable
     private readonly SemaphoreSlim _lock = new(1, 1);
     private bool _disposed;
 
+    /// <summary>
+    /// Display name of the plugin shown in the operator dashboard.
+    /// </summary>
     public string Name => "Scanner";
+
+    /// <summary>
+    /// Current operational state of the scanner plugin.
+    /// </summary>
     public PluginStatus Status { get; private set; } = PluginStatus.Idle;
 
     /// <summary>

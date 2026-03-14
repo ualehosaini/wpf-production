@@ -14,6 +14,9 @@ using IGenericHost = Microsoft.Extensions.Hosting.IHost;
 
 namespace TrackAndTrace.Host;
 
+/// <summary>
+/// Entry point and composition root for the WPF application.
+/// </summary>
 public partial class App : Application
 {
     private IGenericHost? _host;

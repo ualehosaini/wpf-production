@@ -10,6 +10,9 @@ using TrackAndTrace.Host.Services;
 
 namespace TrackAndTrace.Host.ViewModels;
 
+/// <summary>
+/// Primary view model for the operator dashboard, wiring production statistics and plugin status to the UI.
+/// </summary>
 public sealed partial class MainViewModel : ObservableObject
 {
     private const int MaxDisplayedItems = 200;

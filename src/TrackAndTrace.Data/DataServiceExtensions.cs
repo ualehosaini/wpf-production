@@ -4,6 +4,9 @@ using TrackAndTrace.Core.Interfaces;
 
 namespace TrackAndTrace.Data;
 
+/// <summary>
+/// Extension methods that register data-layer services with the DI container.
+/// </summary>
 public static class DataServiceExtensions
 {
     /// <summary>

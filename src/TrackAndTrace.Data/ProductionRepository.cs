@@ -5,6 +5,9 @@ using TrackAndTrace.Data.Entities;
 
 namespace TrackAndTrace.Data;
 
+/// <summary>
+/// SQLite-backed implementation of <see cref="IProductionRepository"/> using EF Core.
+/// </summary>
 public sealed class ProductionRepository : IProductionRepository
 {
     private readonly ProductionDbContext _context;

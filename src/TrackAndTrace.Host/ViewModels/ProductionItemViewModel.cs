@@ -3,6 +3,9 @@ using TrackAndTrace.Core.Models;
 
 namespace TrackAndTrace.Host.ViewModels;
 
+/// <summary>
+/// View model exposing a single production record to the live feed data grid.
+/// </summary>
 public sealed partial class ProductionItemViewModel : ObservableObject
 {
     [ObservableProperty] private string _serialNumber = string.Empty;
@@ -11,6 +14,9 @@ public sealed partial class ProductionItemViewModel : ObservableObject
     [ObservableProperty] private string _pluginSummary = string.Empty;
     [ObservableProperty] private DateTime _timestamp;
 
+    /// <summary>
+    /// Creates a view model instance from a persisted production record.
+    /// </summary>
     public static ProductionItemViewModel From(ProductionRecord record) =>
         new()
         {
