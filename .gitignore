@@ -1,0 +1,64 @@
+# Build outputs
+bin/
+obj/
+out/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Publish output
+publish/
+PublishProfiles/
+
+# Entity Framework migrations (keep if you add them intentionally)
+# Migrations/
+
+# SQLite databases (runtime data - not source)
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Secrets / environment
+*.env
+appsettings.*.json
+!appsettings.json
+secrets.json
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user

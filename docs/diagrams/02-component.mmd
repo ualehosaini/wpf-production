@@ -1,0 +1,42 @@
+graph LR
+    subgraph Simulators["Standalone Simulators"]
+        SCANSIM["Scanner\nTCP :5001 request-response"]
+        VC["VisionOrCamera\nTCP :5002 request-response"]
+    end
+
+    subgraph Host["TrackAndTrace.Host"]
+        APP["App.xaml.cs\nDI Container Bootstrap"]
+        ISS["ItemSourceService\nBackgroundService\nperiodic item trigger"]
+        ORCH["PluginOrchestrator"]
+        ERP["ErpExportService"]
+
+        subgraph MVVM["MVVM"]
+            VM["MainViewModel\nObservableObject"]
+            VIEW["MainWindow.xaml\nWPF View"]
+        end
+    end
+
+    subgraph PluginLayer["Plugins"]
+        SP["ScannerPlugin\nIStationPlugin + TCP :5001 client"]
+        IP["InspectionPlugin\nIStationPlugin + TCP :5002 client"]
+    end
+
+    subgraph DataLayer["Data"]
+        REPO["ProductionRepository"]
+        DB[("SQLite\nproduction.db")]
+    end
+
+    SP -->|SCAN / serial| SCANSIM
+    IP -->|serial / PASS-FAIL| VC
+
+    APP -->|registers| ISS
+    APP -->|registers| ORCH
+    APP -->|registers| VM
+    ISS -->|HandleItem| VM
+    VM -->|Process bg-thread| ORCH
+    ORCH -->|ProcessItem| SP
+    ORCH -->|ProcessItem| IP
+    VM -->|SaveAsync| REPO
+    REPO -->|EF Core| DB
+    ERP -->|GetAllAsync| REPO
+    VIEW -->|DataContext binding| VM

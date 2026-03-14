@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TrackAndTrace.Core\TrackAndTrace.Core.csproj" />
+    <ProjectReference Include="..\TrackAndTrace.Data\TrackAndTrace.Data.csproj" />
+    <ProjectReference Include="..\TrackAndTrace.Plugins.Scanner\TrackAndTrace.Plugins.Scanner.csproj" />
+    <ProjectReference Include="..\TrackAndTrace.Plugins.Inspection\TrackAndTrace.Plugins.Inspection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>

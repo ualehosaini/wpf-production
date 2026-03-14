@@ -1,0 +1,21 @@
+graph LR
+    subgraph Current["PoC (with Simulators)"]
+        FAKESCAN["Scanner console\nTCP :5001 request-response"]
+        FAKEVISION["VisionOrCamera console\nTCP :5002 request-response"]
+        SQLITE["SQLite"]
+        CSV["CSV Export"]
+    end
+
+    subgraph Extended["Production Extension"]
+        REAL_SCAN["Real barcode scanner\nSerial / TCP / OPC-UA driver"]
+        REAL_VISION["Real vision system\nCamera controller API"]
+        SQLSERVER["SQL Server / Oracle"]
+        ERP["ERP REST API\nSAP / custom endpoint"]
+    end
+
+    FAKESCAN -->|replace with| REAL_SCAN
+    FAKEVISION -->|replace with| REAL_VISION
+    SQLITE -->|swap EF provider| SQLSERVER
+    CSV -->|extend to| ERP
+
+    note1["Only DI registration\nchanges required"]

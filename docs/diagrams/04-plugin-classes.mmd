@@ -1,0 +1,83 @@
+classDiagram
+    class IStationPlugin {
+        <<interface>>
+        +string Name
+        +PluginStatus Status
+        +ProcessItem(ProductionItem) ProcessResult
+        +Configure(PluginConfiguration) void
+    }
+
+    class ScannerPlugin {
+        -string _host
+        -int _port
+        -TcpClient _client
+        -StreamWriter _writer
+        -StreamReader _reader
+        -SemaphoreSlim _lock
+        +string Name = "Scanner"
+        +PluginStatus Status
+        +ProcessItem(ProductionItem) ProcessResult
+        +Configure(PluginConfiguration) void
+        +Dispose() void
+        -EnsureConnected() void
+        -DropConnection() void
+    }
+
+    class ItemSourceService {
+        -MainViewModel _viewModel
+        -SimulatorSettings _settings
+        +ExecuteAsync(CancellationToken) Task
+    }
+
+    class InspectionPlugin {
+        -string _host
+        -int _port
+        -TcpClient _client
+        -StreamWriter _writer
+        -StreamReader _reader
+        -SemaphoreSlim _lock
+        +string Name = "Inspection"
+        +PluginStatus Status
+        +ProcessItem(ProductionItem) ProcessResult
+        +Configure(PluginConfiguration) void
+        +Dispose() void
+        -EnsureConnected() void
+        -DropConnection() void
+    }
+
+    class HardwareSettings {
+        +string ScannerHost
+        +int ScannerPort
+        +string VisionHost
+        +int VisionPort
+        +int ReconnectDelaySeconds
+    }
+
+    class PluginOrchestrator {
+        -IReadOnlyList~IStationPlugin~ _plugins
+        +Plugins IReadOnlyList~IStationPlugin~
+        +Process(ProductionItem) IReadOnlyList~ProcessResult~
+        +ApplyConfiguration(PluginConfiguration) void
+    }
+
+    class ProcessResult {
+        +bool Passed
+        +string PluginName
+        +string Message
+        +DateTime ProcessedAt
+    }
+
+    class ProductionItem {
+        +string SerialNumber
+        +string StationId
+        +DateTime Timestamp
+    }
+
+    IStationPlugin <|.. ScannerPlugin
+    IStationPlugin <|.. InspectionPlugin
+    ScannerPlugin ..> HardwareSettings : injected by DI
+    InspectionPlugin ..> HardwareSettings : injected by DI
+    ItemSourceService ..> SimulatorSettings : injected by DI
+    PluginOrchestrator o-- IStationPlugin
+    IStationPlugin ..> ProductionItem : consumes
+    IStationPlugin ..> ProcessResult : produces

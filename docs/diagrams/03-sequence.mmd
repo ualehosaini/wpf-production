@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant ISS as ItemSourceService
+    participant VM as MainViewModel
+    participant Orch as PluginOrchestrator
+    participant SP as ScannerPlugin
+    participant SC as Scanner :5001
+    participant IP as InspectionPlugin
+    participant VC as VisionOrCamera :5002
+    participant Repo as ProductionRepository
+    participant DB as SQLite
+
+    ISS->>VM: HandleItem(ProductionItem{no serial yet})
+
+    VM->>Orch: Process(item) [background thread]
+    Orch->>SP: ProcessItem(item)
+    SP->>SC: "SCAN" (TCP request)
+    SC-->>SP: "BN20260311-000042" or "READ_ERROR"
+    Note over SP: Sets item.SerialNumber from scanner response
+    SP-->>Orch: ProcessResult {Passed, Message}
+    Orch->>IP: ProcessItem(item)
+    IP->>VC: BN20260311-000042 (TCP verify)
+    VC-->>IP: PASS / FAIL:reason
+    IP-->>Orch: ProcessResult {Passed, Message}
+    Orch-->>VM: IReadOnlyList of ProcessResult
+
+    VM->>VM: Update counters & UI (Dispatcher)
+    VM->>Repo: SaveAsync(item, results)
+    Repo->>DB: INSERT ProductionEntry
+    DB-->>Repo: OK

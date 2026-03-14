@@ -1,0 +1,14 @@
+graph TD
+    DI["DI Container\nApp.xaml.cs"]
+
+    DI -->|Singleton| SimSettings["SimulatorSettings\n(StationId, ItemsPerMinute)"]
+    DI -->|Singleton| HWSettings["HardwareSettings\nScannerHost :5001\nVisionHost :5002"]
+    DI -->|Singleton| SP_NODE["ScannerPlugin\nIStationPlugin + TCP :5001 client"]
+    DI -->|Singleton| IP_NODE["InspectionPlugin\nIStationPlugin + TCP :5002 client"]
+    DI -->|HostedService| ISS_NODE["ItemSourceService\nBackgroundService\nperiodic item trigger"]
+    DI -->|Singleton| Orch["PluginOrchestrator"]
+    DI -->|Scoped via AddDbContext| DbCtx["ProductionDbContext"]
+    DI -->|Scoped| Repo["IProductionRepository\n→ ProductionRepository"]
+    DI -->|Singleton| Export["ErpExportService"]
+    DI -->|Singleton| VM["MainViewModel"]
+    DI -->|Singleton| Win["MainWindow"]

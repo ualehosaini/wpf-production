@@ -1,0 +1,20 @@
+graph LR
+    subgraph View["View (MainWindow.xaml)"]
+        TotalLabel["TotalItems label"]
+        Grid["Production Log DataGrid"]
+        HWPanel["Hardware Info Panel\nStationId, ScannerAddress\nVisionAddress (read-only)"]
+        StatusBar["Status Message"]
+        ExportBtn["Export CSV Button"]
+    end
+
+    subgraph ViewModel["MainViewModel"]
+        Props["ObservableProperties\nTotalItems, PassedItems\nFailedItems, RejectRate\nStationId, ScannerAddress\nVisionAddress, StatusMessage"]
+        Collections["ObservableCollections\nRecentItems, PluginStatuses"]
+        Commands["RelayCommands\nExportToCsvCommand"]
+    end
+
+    Props -->|OneWay binding| TotalLabel
+    Collections -->|ItemsSource binding| Grid
+    Props -->|OneWay binding| HWPanel
+    Props -->|OneWay binding| StatusBar
+    Commands -->|Command binding| ExportBtn

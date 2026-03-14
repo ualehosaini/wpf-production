@@ -1,0 +1,38 @@
+graph TD
+    subgraph Simulators["Simulator Layer (Standalone Console Apps)"]
+        SCANSIM["Simulator.Scanner\n─────────────────\nTCP :5001  request-response"]
+        VISION["Simulator.VisionOrCamera\n─────────────────\nTCP :5002  request-response"]
+    end
+
+    subgraph Presentation["Presentation Layer"]
+        HOST["TrackAndTrace.Host\n─────────────────\nWPF Application\nMVVM ViewModels\nItemSourceService (BackgroundService)\nDI Bootstrap"]
+    end
+
+    subgraph Plugins["Plugin Layer"]
+        SCANNER["TrackAndTrace.Plugins.Scanner\n─────────────────\nScannerPlugin\nIStationPlugin + TCP :5001 client"]
+        INSPECTION["TrackAndTrace.Plugins.Inspection\n─────────────────\nInspectionPlugin\nIStationPlugin + TCP :5002 client"]
+    end
+
+    subgraph Data["Data Layer"]
+        DATAPROJ["TrackAndTrace.Data\n─────────────────\nEF Core DbContext\nProductionRepository\nSQLite via EF Core"]
+    end
+
+    subgraph Core["Core Layer (shared contracts)"]
+        COREPROJ["TrackAndTrace.Core\n─────────────────\nIStationPlugin\nIProductionRepository\nHardwareSettings\nModels & DTOs"]
+    end
+
+    SCANNER -->|TCP :5001 SCAN request| SCANSIM
+    INSPECTION -->|TCP :5002 verify| VISION
+    HOST --> SCANNER
+    HOST --> INSPECTION
+    HOST --> DATAPROJ
+    HOST --> COREPROJ
+    SCANNER --> COREPROJ
+    INSPECTION --> COREPROJ
+    DATAPROJ --> COREPROJ
+
+    style Core fill:#313244,color:#CDD2EA,stroke:#89B4FA
+    style Data fill:#313244,color:#CDD2EA,stroke:#A6E3A1
+    style Plugins fill:#313244,color:#CDD2EA,stroke:#FAB387
+    style Presentation fill:#313244,color:#CDD2EA,stroke:#F38BA8
+    style Simulators fill:#1E1E2E,color:#CDD2EA,stroke:#CBA6F7

@@ -1,0 +1,407 @@
+<Window x:Class="TrackAndTrace.Host.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:TrackAndTrace.Host.Converters"
+        Title="Track &amp; Trace - Production Monitor"
+        Height="700" Width="1100"
+        MinHeight="600" MinWidth="900"
+        Background="#FF1E1E2E">
+
+    <Window.Resources>
+        <converters:BoolToPassFailConverter x:Key="BoolToPassFail"/>
+        <converters:BoolToPassFailBrushConverter x:Key="BoolToBrush"/>
+        <converters:PluginStatusToBrushConverter x:Key="PluginStatusToBrush"/>
+        <converters:PercentageConverter x:Key="PercentConv"/>
+
+        <Style x:Key="HeaderText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFCDD2EA"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Opacity" Value="0.7"/>
+        </Style>
+
+        <Style x:Key="ValueText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFCDD2EA"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="#FF313244"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF89B4FA"/>
+            <Setter Property="Foreground" Value="#FF1E1E2E"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFB4CFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF45475A"/>
+            <Setter Property="Foreground" Value="#FFCDD2EA"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF585B70"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFCDD2EA"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFCDD2EA"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="RowBackground" Value="Transparent"/>
+            <Setter Property="AlternatingRowBackground" Value="#22FFFFFF"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FF45475A"/>
+                        <Setter Property="Foreground" Value="#FFCDD2EA"/>
+                        <Setter Property="Padding" Value="8,6"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="Transparent">
+                            <Track Name="PART_Track" IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.LineUpCommand" Opacity="0"
+                                                  Height="0"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#FF45475A" CornerRadius="3"
+                                                        Margin="1,2"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.LineDownCommand" Opacity="0"
+                                                  Height="0"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF45475A"/>
+                    <Setter Property="Foreground" Value="#FFCDD2EA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <Border Grid.Row="0" Background="#FF181825" Padding="20,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="TRACK &amp; TRACE" Foreground="#FF89B4FA"
+                               FontSize="20" FontWeight="Bold"/>
+                    <TextBlock Text="Production Monitor - Serial Number Tracked Voucher Manufacturing"
+                               Foreground="#FF6C7086" FontSize="12" Margin="0,2,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Export to CSV "
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding ExportToCsvCommand}"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Post Summary to ERP"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding PostSummaryToErpCommand}"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Post to MES"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding PostSummaryToGrpCommand}"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Submit Batch Report"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding PushLiveDashboardCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- KPI Cards -->
+        <Grid Grid.Row="1" Margin="12,12,12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.4*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="TOTAL ITEMS" Style="{StaticResource HeaderText}"/>
+                    <TextBlock Text="{Binding TotalItems}" Style="{StaticResource ValueText}"
+                               Foreground="#FF89B4FA"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="PASSED" Style="{StaticResource HeaderText}"/>
+                    <TextBlock Text="{Binding PassedItems}" Style="{StaticResource ValueText}"
+                               Foreground="#FFA6E3A1"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="FAILED" Style="{StaticResource HeaderText}"/>
+                    <TextBlock Text="{Binding FailedItems}" Style="{StaticResource ValueText}"
+                               Foreground="#FFF38BA8"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="3" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="REJECT RATE" Style="{StaticResource HeaderText}"/>
+                    <TextBlock Style="{StaticResource ValueText}" Foreground="#FFFAB387">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0:F1}%">
+                                <Binding Path="RejectRate"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Plugin Status -->
+            <Border Grid.Column="4" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="PLUGINS" Style="{StaticResource HeaderText}" Margin="0,0,0,8"/>
+                    <ItemsControl ItemsSource="{Binding PluginStatuses}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0" Width="8" Height="8" VerticalAlignment="Center"
+                                             Fill="{Binding Status, Converter={StaticResource PluginStatusToBrush}}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}"
+                                               Foreground="#FFCDD2EA" FontSize="13" Margin="8,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Status}"
+                                               Foreground="#FF6C7086" FontSize="11"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="2" Margin="12,12,12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="240"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Production Log -->
+            <Border Grid.Column="0" Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="LIVE PRODUCTION LOG"
+                               Style="{StaticResource HeaderText}" Margin="0,0,0,10"/>
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding RecentItems}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              SelectionMode="Single"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="STATUS" Width="70">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="4" Padding="6,2"
+                                                Background="{Binding Passed, Converter={StaticResource BoolToBrush}}">
+                                            <TextBlock Text="{Binding Passed, Converter={StaticResource BoolToPassFail}}"
+                                                       Foreground="White" FontSize="10" FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="SERIAL NUMBER" Binding="{Binding SerialNumber}" Width="160"/>
+                            <DataGridTextColumn Header="STATION" Binding="{Binding StationId}" Width="100"/>
+                            <DataGridTextColumn Header="TIME" Binding="{Binding Timestamp, StringFormat=HH:mm:ss.fff}" Width="100"/>
+                            <DataGridTextColumn Header="PLUGIN RESULTS" Binding="{Binding PluginSummary}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <!-- Hardware Settings Panel -->
+            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="8,4,4,4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Fixed: hardware connections -->
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="HARDWARE CONNECTIONS" Style="{StaticResource HeaderText}" Margin="0,0,0,16"/>
+
+                        <TextBlock Style="{StaticResource SliderLabel}" Text="Station ID"/>
+                        <TextBox Text="{Binding StationId, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 Background="#FF45475A" Foreground="#FF89B4FA"
+                                 BorderThickness="0" Padding="8,6" FontSize="13"
+                                 FontFamily="Consolas"
+                                 Margin="0,0,0,16">
+                            <TextBox.Resources>
+                                <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <TextBlock Style="{StaticResource SliderLabel}" Text="Scanner  (TCP)"/>
+                        <TextBox Text="{Binding ScannerAddress, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 Background="#FF45475A" Foreground="#FFA6E3A1"
+                                 BorderThickness="0" Padding="8,6" FontSize="13"
+                                 FontFamily="Consolas"
+                                 Margin="0,0,0,16">
+                            <TextBox.Resources>
+                                <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <TextBlock Style="{StaticResource SliderLabel}" Text="VisionOrCamera  (TCP)"/>
+                        <TextBox Text="{Binding VisionAddress, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 Background="#FF45475A" Foreground="#FFA6E3A1"
+                                 BorderThickness="0" Padding="8,6" FontSize="13"
+                                 FontFamily="Consolas"
+                                 Margin="0,0,0,16">
+                            <TextBox.Resources>
+                                <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <Separator Background="#FF45475A" Margin="0,8,0,8"/>
+                    </StackPanel>
+
+                    <!-- Scrollable: about section -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <TextBlock Text="ABOUT THE DASHBOARD" Style="{StaticResource HeaderText}" Margin="0,8,0,8"/>
+                            <TextBlock TextWrapping="Wrap" Foreground="#FF6C7086" FontSize="11" LineHeight="18">
+                                Real-time production monitor for serial number tracked voucher manufacturing. Tracks every item through the line, aggregates pass/fail outcomes, and surfaces reject rates for ERP export.
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="#FF6C7086" FontSize="11" LineHeight="18" Margin="0,8,0,0">
+                                Two plugins run in-process - Scanner reads serial numbers via TCP, and VisionOrCamera delivers pass/fail inspection results. Each connects to its simulator console on startup.
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="#FF6C7086" FontSize="11" LineHeight="18" Margin="0,8,0,0">
+                                Start the simulators first - the dashboard reconnects automatically.
+                            </TextBlock>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Background="#FF181825" Padding="20,8">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#FF6C7086" FontSize="11"/>
+        </Border>
+    </Grid>
+</Window>
